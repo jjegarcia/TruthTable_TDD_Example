@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TruthTable_TDD_Example</string>
+    <string name="learnMore">Learn More</string>
+    <string name="DetailsActivityDescription">Deatails Screen</string>
+</resources>
