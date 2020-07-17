@@ -1,17 +1,23 @@
 package com.example.truthtable_tdd_example
 
-import android.graphics.Color
+import android.content.Intent
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 
 class MainSupport{
-    fun showSnackBar(message:String,view: View){
-        var snackbar: Snackbar = Snackbar.make(
+
+    fun showSnackBar(view: View,message:String, length: Int){
+        var snackBar: Snackbar = Snackbar.make(
             view,
             message,
-            Snackbar.LENGTH_LONG
+            length
         )
-        snackbar
-        snackbar.show()
+        snackBar.show()
     }
+
+    fun launchIntent(view: View){
+        val intent=Intent(view.context,DetailsActivity::class.java)
+        view.getContext().startActivity(intent)
+    }
+
 }
