@@ -1,5 +1,7 @@
 package com.example.truthtable_tdd_example
 
-class DetailsActivityViewModel {
+import androidx.lifecycle.ViewModel
+
+class DetailsActivityViewModel: ViewModel(){
 
 }

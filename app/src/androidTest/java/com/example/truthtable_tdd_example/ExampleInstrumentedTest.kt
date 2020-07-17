@@ -1,7 +1,12 @@
 package com.example.truthtable_tdd_example
 
+import android.view.View
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
+import com.google.android.material.snackbar.Snackbar
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 
 import org.junit.Test
 import org.junit.runner.RunWith
