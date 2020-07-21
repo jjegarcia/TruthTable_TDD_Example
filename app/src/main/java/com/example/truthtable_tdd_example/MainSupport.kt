@@ -15,8 +15,8 @@ class MainSupport{
         snackBar.show()
     }
 
-    fun launchIntent(view: View){
-        val intent=Intent(view.context,DetailsActivity::class.java)
+    fun launchIntent(view: View,intent: Intent){
+//        val intent=Intent(view.context,DetailsActivity::class.java)
         view.getContext().startActivity(intent)
     }
 
