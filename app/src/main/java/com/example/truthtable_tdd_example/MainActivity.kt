@@ -18,7 +18,14 @@ class MainActivity : AppCompatActivity() {
 //        setContentView(inflate.root)
         inflateBinding()
         mainActivityViewModel.launchSnackBarData.observe(
-        this, Observer { mainSupport.showSnackBar(it.view,it.message,it.length) }
+        this, Observer {
+                mainSupport.showSnackBar(view = it.view,message = it.message,length = it.length)
+            }
+        )
+        mainActivityViewModel.launchDetailsAcitivityData.observe(
+            this, Observer {
+                mainSupport.launchIntent(view = it.view,intent = it.intent)
+            }
         )
     }
 
