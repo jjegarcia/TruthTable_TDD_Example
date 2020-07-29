@@ -1,10 +1,9 @@
 package com.example.truthtable_tdd_example
 
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
+import com.example.truthtable_tdd_example.main.MainActivityViewModel
 import com.google.android.material.snackbar.Snackbar
 import io.mockk.*
 import org.junit.Test
@@ -19,7 +18,8 @@ class MainActivityViewModelTest {
 
     @Test
     fun `launchSnackBar - any condition - loads snackbar parameters`() {
-        val subject = MainActivityViewModel()
+        val subject =
+            MainActivityViewModel()
         val view: View = mockk()
         val message = "testing"
         val length = Snackbar.LENGTH_LONG
@@ -33,7 +33,8 @@ class MainActivityViewModelTest {
 
     @Test
     fun `getIntent - any condition - returns Intent`() {
-        val subject = MainActivityViewModel()
+        val subject =
+            MainActivityViewModel()
         val view: View = mockk()
         val context: Context = mockk()
         every { view.context } returns context
@@ -46,7 +47,8 @@ class MainActivityViewModelTest {
 
     @Test
     fun `launchDetailsActivity - any condition - loads details activity parameter`() {
-        val subject = MainActivityViewModel()
+        val subject =
+            MainActivityViewModel()
         val view: View = mockk()
         val context: Context = mockk()
         every { view.context } returns context
@@ -55,5 +57,16 @@ class MainActivityViewModelTest {
 
         assertThat(subject.launchDetailsAcitivityData.value!!.view).isEqualTo(view)
     }
+
+    @Test
+    fun `zipAPIs - any condition - return zipped items`() {
+        val subject =
+            MainActivityViewModel()
+
+        val response=subject.zipAPIs()
+//        assertThat(response).isEqualTo()
+
+    }
+
 }
 

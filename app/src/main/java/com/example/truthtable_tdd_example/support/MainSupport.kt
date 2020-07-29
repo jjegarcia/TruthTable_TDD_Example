@@ -1,4 +1,4 @@
-package com.example.truthtable_tdd_example
+package com.example.truthtable_tdd_example.support
 
 import android.content.Intent
 import android.view.View
@@ -7,7 +7,7 @@ import com.google.android.material.snackbar.Snackbar
 class MainSupport{
 
     fun showSnackBar(view: View,message:String, length: Int){
-        var snackBar: Snackbar = Snackbar.make(
+        val snackBar: Snackbar = Snackbar.make(
             view,
             message,
             length
@@ -17,7 +17,7 @@ class MainSupport{
 
     fun launchIntent(view: View,intent: Intent){
 //        val intent=Intent(view.context,DetailsActivity::class.java)
-        view.getContext().startActivity(intent)
+        view.context.startActivity(intent)
     }
 
 }

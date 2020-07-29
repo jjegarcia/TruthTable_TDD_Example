@@ -4,12 +4,12 @@
         xmlns:tools="http://schemas.android.com/tools">
     <data>
         <import type="android.view.View" />
-        <variable name="viewModel" type="com.example.truthtable_tdd_example.MainActivityViewModel"/>
+        <variable name="viewModel" type="com.example.truthtable_tdd_example.main.MainActivityViewModel"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MainActivity">
+            tools:context=".main.MainActivity">
         <Button android:id="@+id/learn_more_button"
                 android:text="@string/learnMore"
                 android:layout_width="wrap_content"

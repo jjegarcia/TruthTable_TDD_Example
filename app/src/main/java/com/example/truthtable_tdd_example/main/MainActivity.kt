@@ -1,22 +1,28 @@
-package com.example.truthtable_tdd_example
+package com.example.truthtable_tdd_example.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.lifecycle.Observer
+import com.example.truthtable_tdd_example.data.OilLifeHealthDetailsIntentProvider
+import com.example.truthtable_tdd_example.support.MainSupport
 import com.example.truthtable_tdd_example.databinding.ActivityMainBinding
+import com.example.truthtable_tdd_example.di.MyApplication
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
-    val mainSupport=MainSupport()
+    val mainSupport= MainSupport()
+    @Inject
     lateinit var mainActivityViewModel: MainActivityViewModel
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val inflate = ActivityMainBinding.inflate(layoutInflater)
-        mainActivityViewModel= MainActivityViewModel()
-//        inflate.viewModel= mainActivityViewModel()
-//        mainActivityViewModel.
-//        setContentView(inflate.root)
+//        val inflate = ActivityMainBinding.inflate(layoutInflater)
+        (application as MyApplication).appComponent.inject(this) //1
+
         inflateBinding()
+
         mainActivityViewModel.launchSnackBarData.observe(
         this, Observer {
                 mainSupport.showSnackBar(view = it.view,message = it.message,length = it.length)

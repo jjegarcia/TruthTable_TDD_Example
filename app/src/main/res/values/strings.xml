@@ -2,6 +2,6 @@
     <string name="app_name">TruthTable_TDD_Example</string>
     <string name="learnMore">Learn More</string>
     <string name="DetailsActivityDescription">Deatails Screen</string>
-    <string name="title_activity_details2">DetailsActivity2</string>
+    <string name="title_activity_details2">DetailsActivity</string>
     <string name="details_activity">Details Activity</string>
 </resources>
