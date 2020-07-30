@@ -15,14 +15,10 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mainActivityViewModel: MainActivityViewModel
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val inflate = ActivityMainBinding.inflate(layoutInflater)
         (application as MyApplication).appComponent.inject(this) //1
-
         inflateBinding()
-
         mainActivityViewModel.launchSnackBarData.observe(
         this, Observer {
                 mainSupport.showSnackBar(view = it.view,message = it.message,length = it.length)

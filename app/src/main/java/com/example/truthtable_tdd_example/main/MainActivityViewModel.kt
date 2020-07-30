@@ -66,8 +66,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun launchDetailsActivity(view: View) {
-        val launchActivityData =
-            zipAPIs(view)
+        val launchActivityData = zipAPIs(view)
  //           LauchActivityDataClass(view = view, intent = getIntent(view.context))
  //       _launchDetailsAcitivityData.postValue(launchActivityData)
     }

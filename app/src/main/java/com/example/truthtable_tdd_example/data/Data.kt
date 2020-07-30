@@ -11,6 +11,10 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 import javax.inject.Inject
 
+data class ItemData(
+    val label:String,
+    val value:String
+)
 data class SnackBarDataClass(
     val view: View,
     val message: String,
