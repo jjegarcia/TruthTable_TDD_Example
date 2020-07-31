@@ -58,7 +58,7 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `zipAPIs - cheAPIErrorFree= true- return zipped items`() {
+    fun `zipAPIs - APIErrorFree= true- return zipped items`() {
         var oilLifePrognostics: OilLifePrognostics =
             OilLifePrognostics(
                 isError = false,
@@ -100,7 +100,7 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `zipAPIs - OLP not null - return zipped items`() {
+    fun `zipAPIs - OLP inError - doesn't return zipped items`() {
         var oilLifePrognostics: OilLifePrognostics =
             OilLifePrognostics(
                 isError = false,
@@ -126,8 +126,143 @@ class MainActivityViewModelTest {
         val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
         val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
         val view: View = mockk()
-
+        val intent: Intent = mockk()
+        val context: Context = mockk("steve")
+        every { view.context } returns context
+        var arguments =OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus=vehicleStatus
+        subject.oilLifePrognostics=oilLifePrognostics
         val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isNotEqualTo(intent)
+    }
+    @Test
+    fun `zipAPIs - VS inError (not authorised) - doesn't return zipped items`() {
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = true,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = false,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk("steve")
+        every { view.context } returns context
+        var arguments =OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus=vehicleStatus
+        subject.oilLifePrognostics=oilLifePrognostics
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isNotEqualTo(intent)
+    }
+
+    @Test
+    fun `zipAPIs - VS inError (location not authorised) - doesn't return zipped items`() {
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = true,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = false,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk("steve")
+        every { view.context } returns context
+        var arguments =OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus=vehicleStatus
+        subject.oilLifePrognostics=oilLifePrognostics
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isNotEqualTo(intent)
+    }
+    @Test
+    fun `zipAPIs - VS inError (not authorised & location not authorised) - doesn't return zipped items`() {
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = true,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = false,
+                isLocationAuthorised = false,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk("steve")
+        every { view.context } returns context
+        var arguments =OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus=vehicleStatus
+        subject.oilLifePrognostics=oilLifePrognostics
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isNotEqualTo(intent)
     }
 
 }

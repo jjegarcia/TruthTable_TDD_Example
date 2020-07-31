@@ -21,26 +21,7 @@ class MainActivityViewModel @Inject constructor(
     val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider
 ) : ViewModel() {
     lateinit var oilLifePrognostics: OilLifePrognostics
-//        OilLifePrognostics(
-//            isError = false,
-//            oil = OilDataClass(
-//                vin = "OLP_vin",
-//                percentage = 50,
-//                state = OilState.GOOD,
-//                date = Date()
-//            )
-//        )
-lateinit    var vehicleStatus: VehicleStatus
-//        VehicleStatus(
-//            vehicleStatusAuthorised = true,
-//            isLocationAuthorised = true,
-//            oil = OilDataClass(
-//                vin = "OIL_vin",
-//                percentage = 25,
-//                state = OilState.GOOD,
-//                date = Date()
-//            )
-//        )
+    lateinit var vehicleStatus: VehicleStatus
     private val _launchSnackBarData = MutableLiveData<SnackBarDataClass>()
     val launchSnackBarData: LiveData<SnackBarDataClass> get() = _launchSnackBarData
     private val _launchDetailsAcitivityData = MutableLiveData<LauchActivityDataClass>()
@@ -99,9 +80,9 @@ lateinit    var vehicleStatus: VehicleStatus
                 )
             ) {
                 val arguments = OilMessageIntentArguments.LoadRequestArguments(
-                        oilLifePrognostics = oilLifePrognostics,
-                        oil = vehicleStatus
-                    )
+                    oilLifePrognostics = oilLifePrognostics,
+                    oil = vehicleStatus
+                )
                 val intent = getIntent(context = view.context, arguments = arguments)
                 _launchDetailsAcitivityData.postValue(
                     LauchActivityDataClass(
@@ -133,4 +114,30 @@ lateinit    var vehicleStatus: VehicleStatus
         throwable.printStackTrace()
     }
 
+    private fun setOilLifePrognostic() {
+        oilLifePrognostics =
+            OilLifePrognostics(
+                isError = false,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+    }
+
+    private fun setVehicleStatus() {
+        vehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+    }
 }
