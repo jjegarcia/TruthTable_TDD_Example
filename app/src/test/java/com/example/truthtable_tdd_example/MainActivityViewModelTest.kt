@@ -1,15 +1,24 @@
 package com.example.truthtable_tdd_example
 
+import android.content.ClipData.newIntent
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.getIntent
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.truthtable_tdd_example.data.*
 import com.example.truthtable_tdd_example.main.MainActivityViewModel
 import com.google.android.material.snackbar.Snackbar
 import io.mockk.*
+import io.reactivex.Single
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import org.junit.Test
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.rules.TestRule
+import java.util.*
+import com.example.truthtable_tdd_example.data.OilLifeHealthDetailsIntentProvider as OilLifeHealthDetailsIntentProvider
 
 class MainActivityViewModelTest {
 
@@ -18,8 +27,8 @@ class MainActivityViewModelTest {
 
     @Test
     fun `launchSnackBar - any condition - loads snackbar parameters`() {
-        val subject =
-            MainActivityViewModel()
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
         val view: View = mockk()
         val message = "testing"
         val length = Snackbar.LENGTH_LONG
@@ -33,39 +42,92 @@ class MainActivityViewModelTest {
 
     @Test
     fun `getIntent - any condition - returns Intent`() {
-        val subject =
-            MainActivityViewModel()
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
         val view: View = mockk()
         val context: Context = mockk()
         every { view.context } returns context
+        val arguments: OilMessageIntentArguments.LoadRequestArguments = mockk()
+        val intent: Intent = mockk()
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
 
-
-        val response = subject.getIntent(context = context)
+        val response = subject.getIntent(context = context, arguments = arguments)
 
         assertThat(response).isNotNull()
+        assertThat(response).isEqualTo(intent)
     }
 
     @Test
-    fun `launchDetailsActivity - any condition - loads details activity parameter`() {
-        val subject =
-            MainActivityViewModel()
+    fun `zipAPIs - cheAPIErrorFree= true- return zipped items`() {
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = false,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
         val view: View = mockk()
-        val context: Context = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk("steve")
         every { view.context } returns context
+         var arguments =OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus=vehicleStatus
+        subject.oilLifePrognostics=oilLifePrognostics
+        val response = subject.zipAPIs(view = view)
 
-        subject.launchDetailsActivity(view = view)
-
-        assertThat(subject.launchDetailsAcitivityData.value!!.view).isEqualTo(view)
+         assertThat(subject.launchDetailsAcitivityData.value!!.intent).isEqualTo(intent)
     }
 
     @Test
-    fun `zipAPIs - any condition - return zipped items`() {
-        val subject =
-            MainActivityViewModel()
+    fun `zipAPIs - OLP not null - return zipped items`() {
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = false,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
 
-        val response=subject.zipAPIs()
-//        assertThat(response).isEqualTo()
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
 
+        val response = subject.zipAPIs(view = view)
     }
 
 }

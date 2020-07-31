@@ -20,38 +20,34 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider
 ) : ViewModel() {
-    var oilLifePrognostics: OilLifePrognostics =
-        OilLifePrognostics(
-            isError = false,
-            oil = OilDataClass(
-                vin = "OLP_vin",
-                percentage = 50,
-                state = OilState.GOOD,
-                date = Date()
-            )
-        )
-    var vehicleStatus: VehicleStatus =
-        VehicleStatus(
-            vehicleStatusAuthorised = true,
-            isLocationAuthorised = true,
-            oil = OilDataClass(
-                vin = "OIL_vin",
-                percentage = 25,
-                state = OilState.GOOD,
-                date = Date()
-            )
-        )
+    lateinit var oilLifePrognostics: OilLifePrognostics
+//        OilLifePrognostics(
+//            isError = false,
+//            oil = OilDataClass(
+//                vin = "OLP_vin",
+//                percentage = 50,
+//                state = OilState.GOOD,
+//                date = Date()
+//            )
+//        )
+lateinit    var vehicleStatus: VehicleStatus
+//        VehicleStatus(
+//            vehicleStatusAuthorised = true,
+//            isLocationAuthorised = true,
+//            oil = OilDataClass(
+//                vin = "OIL_vin",
+//                percentage = 25,
+//                state = OilState.GOOD,
+//                date = Date()
+//            )
+//        )
     private val _launchSnackBarData = MutableLiveData<SnackBarDataClass>()
     val launchSnackBarData: LiveData<SnackBarDataClass> get() = _launchSnackBarData
     private val _launchDetailsAcitivityData = MutableLiveData<LauchActivityDataClass>()
     val launchDetailsAcitivityData: LiveData<LauchActivityDataClass> get() = _launchDetailsAcitivityData
-//    lateinit var launcherView: View
 
     fun buttonClickHandler(view: View) {
         Log.d("test", "buttom clicked")
-//        Intent(view.context)
-//        launchSnackBar(view = view, message = "testing", length = Snackbar.LENGTH_LONG)
-//        launcherView = view
         launchDetailsActivity(view = view)
     }
 
@@ -67,8 +63,6 @@ class MainActivityViewModel @Inject constructor(
 
     fun launchDetailsActivity(view: View) {
         val launchActivityData = zipAPIs(view)
- //           LauchActivityDataClass(view = view, intent = getIntent(view.context))
- //       _launchDetailsAcitivityData.postValue(launchActivityData)
     }
 
     fun getIntent(
@@ -89,26 +83,6 @@ class MainActivityViewModel @Inject constructor(
         return Single.just(vehicleStatus)
     }
 
-    fun setOilLifePrognostics(value: Boolean) {
-        oilLifePrognostics.isError = value
-    }
-
-    fun setVehicleStatusVehicleStatusAuthorised(value: Boolean) {
-        vehicleStatus.vehicleStatusAuthorised = value
-    }
-
-    fun setVehicleStatusIsLocationAuthorised(value: Boolean) {
-        vehicleStatus.isLocationAuthorised = value
-    }
-
-    fun setVehicleStatusIsLocationAuthorised(
-        vehicleStatusAuthorised: Boolean,
-        isLocationAuthorised: Boolean
-    ) {
-        setVehicleStatusVehicleStatusAuthorised(vehicleStatusAuthorised)
-        setVehicleStatusIsLocationAuthorised(isLocationAuthorised)
-    }
-
     fun zipAPIs(view: View): Disposable? {
         return Single.zip(
             fetchOilLifePrognostics(oilLifePrognostics), fetchVehicleStatus(vehicleStatus),
@@ -124,8 +98,7 @@ class MainActivityViewModel @Inject constructor(
                     vehicleStatus = vehicleStatus
                 )
             ) {
-                val arguments =
-                    OilMessageIntentArguments.LoadRequestArguments(
+                val arguments = OilMessageIntentArguments.LoadRequestArguments(
                         oilLifePrognostics = oilLifePrognostics,
                         oil = vehicleStatus
                     )
@@ -145,14 +118,14 @@ class MainActivityViewModel @Inject constructor(
             oilLifePrognostics to vehicleStatus
         }
 
-    fun checkAPIErrorFree(
+    private fun checkAPIErrorFree(
         oilLifePrognostics: OilLifePrognostics,
         vehicleStatus: VehicleStatus
     ): Boolean {
         return true
     }
 
-    fun displayErrorSnackbar(view: View) {
+    private fun displayErrorSnackbar(view: View) {
         launchSnackBar(view = view, message = "testing", length = Snackbar.LENGTH_LONG)
     }
 

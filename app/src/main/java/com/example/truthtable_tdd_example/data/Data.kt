@@ -56,7 +56,7 @@ data class OilLifePrognostics(
 
 class OilMessageIntentArguments {
     @Parcelize
-    open class LoadRequestArguments(
+    data class LoadRequestArguments(
         val oilLifePrognostics: OilLifePrognostics,
         val oil: VehicleStatus
     ):Parcelable
