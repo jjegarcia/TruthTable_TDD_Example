@@ -23,6 +23,7 @@ class MainActivityViewModel @Inject constructor(
     lateinit var oilLifePrognostics: OilLifePrognostics
     lateinit var vehicleStatus: VehicleStatus
     lateinit var ccsResponse: CcsResponse
+    var learnMoreButtonPushed: Boolean = false
     private val _launchSnackBarData = MutableLiveData<SnackBarDataClass>()
     val launchSnackBarData: LiveData<SnackBarDataClass> get() = _launchSnackBarData
     private val _launchDetailsAcitivityData = MutableLiveData<LauchActivityDataClass>()
@@ -34,6 +35,7 @@ class MainActivityViewModel @Inject constructor(
 //        setVehicleStatus()
 //        setCcsResponse()
         launchDetailsActivity(view = view)
+        learnMoreButtonPushed = true
     }
 
     fun launchSnackBar(view: View, message: String, length: Int) {
@@ -82,13 +84,14 @@ class MainActivityViewModel @Inject constructor(
             .subscribe(handleSubscription(view), { this.handleError(throwable = it) })
     }
 
-    private fun handleSubscription(view: View): (Pair<Pair<OilLifePrognostics,VehicleStatus>, CcsResponse>) -> Unit {
-         return {
+    private fun handleSubscription(view: View): (Pair<Pair<OilLifePrognostics, VehicleStatus>, CcsResponse>) -> Unit {
+        return {
             if (APIsFail(
                     oilLifePrognostics = oilLifePrognostics,
                     vehicleStatus = vehicleStatus,
-                    ccsResponse= ccsResponse
-                ) )displayErrorSnackbar(view)
+                    ccsResponse = ccsResponse
+                )
+            ) displayErrorSnackbar(view)
             else {
                 val arguments = OilMessageIntentArguments.LoadRequestArguments(
                     oilLifePrognostics = oilLifePrognostics,
@@ -106,7 +109,8 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    val zipFunction = Function3 { oilLifePrognostics: OilLifePrognostics, vehicleStatus: VehicleStatus, ccsResponse: CcsResponse->
+    val zipFunction =
+        Function3 { oilLifePrognostics: OilLifePrognostics, vehicleStatus: VehicleStatus, ccsResponse: CcsResponse ->
             oilLifePrognostics to vehicleStatus to ccsResponse
         }
 
@@ -115,7 +119,10 @@ class MainActivityViewModel @Inject constructor(
         vehicleStatus: VehicleStatus,
         ccsResponse: CcsResponse
     ): Boolean {
-        return false
+        val predicateA = !learnMoreButtonPushed
+        val prediacteB = oilLifePrognostics.isError && (!vehicleStatus.vehicleStatusAuthorised && !vehicleStatus.isLocationAuthorised)
+        val response = predicateA || prediacteB
+        return response
     }
 
     private fun displayErrorSnackbar(view: View) {
@@ -152,8 +159,9 @@ class MainActivityViewModel @Inject constructor(
                 )
             )
     }
-    private fun setCcsResponse(){
-        ccsResponse=
+
+    private fun setCcsResponse() {
+        ccsResponse =
             CcsResponse(isError = false)
     }
 }
