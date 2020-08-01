@@ -53,12 +53,17 @@ data class OilLifePrognostics(
     var oil: OilDataClass
 ):Parcelable
 
+@Parcelize
+data class CcsResponse(
+    var isError: Boolean
+):Parcelable
 
 class OilMessageIntentArguments {
     @Parcelize
     data class LoadRequestArguments(
         val oilLifePrognostics: OilLifePrognostics,
-        val oil: VehicleStatus
+        val oil: VehicleStatus,
+        val ccsResponse: CcsResponse
     ):Parcelable
 }
 

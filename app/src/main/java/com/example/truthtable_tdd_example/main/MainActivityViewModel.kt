@@ -1,6 +1,5 @@
 package com.example.truthtable_tdd_example.main
 
-import android.content.ClipData.newIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -12,7 +11,8 @@ import com.example.truthtable_tdd_example.data.*
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Consumer
+import io.reactivex.functions.Function3
 import java.util.*
 import javax.inject.Inject
 
@@ -22,6 +22,7 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel() {
     lateinit var oilLifePrognostics: OilLifePrognostics
     lateinit var vehicleStatus: VehicleStatus
+    lateinit var ccsResponse: CcsResponse
     private val _launchSnackBarData = MutableLiveData<SnackBarDataClass>()
     val launchSnackBarData: LiveData<SnackBarDataClass> get() = _launchSnackBarData
     private val _launchDetailsAcitivityData = MutableLiveData<LauchActivityDataClass>()
@@ -29,6 +30,9 @@ class MainActivityViewModel @Inject constructor(
 
     fun buttonClickHandler(view: View) {
         Log.d("test", "buttom clicked")
+//        setOilLifePrognostic()
+//        setVehicleStatus()
+//        setCcsResponse()
         launchDetailsActivity(view = view)
     }
 
@@ -64,24 +68,30 @@ class MainActivityViewModel @Inject constructor(
         return Single.just(vehicleStatus)
     }
 
-    fun zipAPIs(view: View): Disposable? {
-        return Single.zip(
-            fetchOilLifePrognostics(oilLifePrognostics), fetchVehicleStatus(vehicleStatus),
-            zipFunction
-        )
-            .subscribe(handleSubscription(view), this::handleError)
+    fun fetchCcsResponse(ccsResponse: CcsResponse): Single<CcsResponse> {
+        return Single.just(ccsResponse)
     }
 
-    private fun handleSubscription(view: View): (Pair<OilLifePrognostics, VehicleStatus>) -> Unit {
-        return {
-            if (checkAPIErrorFree(
+    fun zipAPIs(view: View): Disposable? {
+        return Single.zip(
+            fetchOilLifePrognostics(oilLifePrognostics), fetchVehicleStatus(vehicleStatus), fetchCcsResponse(ccsResponse),
+            zipFunction
+        )
+            .subscribe(handleSubscription(view), { this.handleError(throwable = it) })
+    }
+
+    private fun handleSubscription(view: View): (Pair<Pair<OilLifePrognostics,VehicleStatus>, CcsResponse>) -> Unit {
+         return {
+            if (APIsFail(
                     oilLifePrognostics = oilLifePrognostics,
-                    vehicleStatus = vehicleStatus
-                )
-            ) {
+                    vehicleStatus = vehicleStatus,
+                    ccsResponse= ccsResponse
+                ) )displayErrorSnackbar(view)
+            else {
                 val arguments = OilMessageIntentArguments.LoadRequestArguments(
                     oilLifePrognostics = oilLifePrognostics,
-                    oil = vehicleStatus
+                    oil = vehicleStatus,
+                    ccsResponse = ccsResponse
                 )
                 val intent = getIntent(context = view.context, arguments = arguments)
                 _launchDetailsAcitivityData.postValue(
@@ -90,25 +100,20 @@ class MainActivityViewModel @Inject constructor(
                         intent
                     )
                 )
-            } else displayErrorSnackbar(view)
+            }
         }
     }
 
-    val zipFunction =
-        BiFunction<OilLifePrognostics, VehicleStatus, Pair<OilLifePrognostics, VehicleStatus>> { oilLifePrognostics, vehicleStatus ->
-            oilLifePrognostics to vehicleStatus
+    val zipFunction = Function3 { oilLifePrognostics: OilLifePrognostics, vehicleStatus: VehicleStatus, ccsResponse: CcsResponse->
+            oilLifePrognostics to vehicleStatus to ccsResponse
         }
 
-    private fun checkAPIErrorFree(
+    private fun APIsFail(
         oilLifePrognostics: OilLifePrognostics,
-        vehicleStatus: VehicleStatus
+        vehicleStatus: VehicleStatus,
+        ccsResponse: CcsResponse
     ): Boolean {
-        val predicateA=!oilLifePrognostics.isError
-        val predicateB1=vehicleStatus.vehicleStatusAuthorised
-        val predicateB2=vehicleStatus.isLocationAuthorised
-        val predicateB= predicateB1  && predicateB2
-        val predicate= predicateA && predicateB
-        return predicate
+        return false
     }
 
     private fun displayErrorSnackbar(view: View) {
@@ -144,5 +149,9 @@ class MainActivityViewModel @Inject constructor(
                     date = Date()
                 )
             )
+    }
+    private fun setCcsResponse(){
+        ccsResponse=
+            CcsResponse(isError = false)
     }
 }
