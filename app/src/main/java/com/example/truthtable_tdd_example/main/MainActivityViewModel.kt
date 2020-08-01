@@ -103,7 +103,12 @@ class MainActivityViewModel @Inject constructor(
         oilLifePrognostics: OilLifePrognostics,
         vehicleStatus: VehicleStatus
     ): Boolean {
-        return true
+        val predicateA=!oilLifePrognostics.isError
+        val predicateB1=vehicleStatus.vehicleStatusAuthorised
+        val predicateB2=vehicleStatus.isLocationAuthorised
+        val predicateB= predicateB1  && predicateB2
+        val predicate= predicateA && predicateB
+        return predicate
     }
 
     private fun displayErrorSnackbar(view: View) {

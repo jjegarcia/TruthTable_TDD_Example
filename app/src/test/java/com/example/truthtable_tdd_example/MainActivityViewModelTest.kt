@@ -58,52 +58,10 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `zipAPIs - APIErrorFree= true- return zipped items`() {
-        var oilLifePrognostics: OilLifePrognostics =
-            OilLifePrognostics(
-                isError = false,
-                oil = OilDataClass(
-                    vin = "OLP_vin",
-                    percentage = 50,
-                    state = OilState.GOOD,
-                    date = Date()
-                )
-            )
-        var vehicleStatus: VehicleStatus =
-            VehicleStatus(
-                vehicleStatusAuthorised = true,
-                isLocationAuthorised = true,
-                oil = OilDataClass(
-                    vin = "OIL_vin",
-                    percentage = 25,
-                    state = OilState.GOOD,
-                    date = Date()
-                )
-            )
-
-        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
-        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
-        val view: View = mockk()
-        val intent: Intent = mockk()
-        val context: Context = mockk("steve")
-        every { view.context } returns context
-         var arguments =OilMessageIntentArguments.LoadRequestArguments(
-            oilLifePrognostics = oilLifePrognostics,
-            oil = vehicleStatus
-        )
-        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
-        subject.vehicleStatus=vehicleStatus
-        subject.oilLifePrognostics=oilLifePrognostics
-        val response = subject.zipAPIs(view = view)
-
-         assertThat(subject.launchDetailsAcitivityData.value!!.intent).isEqualTo(intent)
-    }
-
-    @Test
     fun `zipAPIs - OLP inError - doesn't return zipped items`() {
         var oilLifePrognostics: OilLifePrognostics =
             OilLifePrognostics(
-                isError = false,
+                isError = true,
                 oil = OilDataClass(
                     vin = "OLP_vin",
                     percentage = 50,
@@ -138,13 +96,13 @@ class MainActivityViewModelTest {
         subject.oilLifePrognostics=oilLifePrognostics
         val response = subject.zipAPIs(view = view)
 
-        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isNotEqualTo(intent)
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
     }
     @Test
     fun `zipAPIs - VS inError (not authorised) - doesn't return zipped items`() {
         var oilLifePrognostics: OilLifePrognostics =
             OilLifePrognostics(
-                isError = true,
+                isError = false,
                 oil = OilDataClass(
                     vin = "OLP_vin",
                     percentage = 50,
@@ -179,14 +137,14 @@ class MainActivityViewModelTest {
         subject.oilLifePrognostics=oilLifePrognostics
         val response = subject.zipAPIs(view = view)
 
-        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isNotEqualTo(intent)
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
     }
 
     @Test
     fun `zipAPIs - VS inError (location not authorised) - doesn't return zipped items`() {
         var oilLifePrognostics: OilLifePrognostics =
             OilLifePrognostics(
-                isError = true,
+                isError = false,
                 oil = OilDataClass(
                     vin = "OLP_vin",
                     percentage = 50,
@@ -221,13 +179,13 @@ class MainActivityViewModelTest {
         subject.oilLifePrognostics=oilLifePrognostics
         val response = subject.zipAPIs(view = view)
 
-        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isNotEqualTo(intent)
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
     }
     @Test
     fun `zipAPIs - VS inError (not authorised & location not authorised) - doesn't return zipped items`() {
         var oilLifePrognostics: OilLifePrognostics =
             OilLifePrognostics(
-                isError = true,
+                isError = false,
                 oil = OilDataClass(
                     vin = "OLP_vin",
                     percentage = 50,
@@ -262,7 +220,49 @@ class MainActivityViewModelTest {
         subject.oilLifePrognostics=oilLifePrognostics
         val response = subject.zipAPIs(view = view)
 
-        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isNotEqualTo(intent)
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
+    }
+
+    @Test
+    fun `zipAPIs - APIs ErrorFree - return zipped items`() {
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = false,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk("steve")
+        every { view.context } returns context
+        var arguments =OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus=vehicleStatus
+        subject.oilLifePrognostics=oilLifePrognostics
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isEqualTo(intent)
     }
 
 }
