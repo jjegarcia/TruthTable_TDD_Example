@@ -121,7 +121,8 @@ class MainActivityViewModel @Inject constructor(
     ): Boolean {
         val predicateA = !learnMoreButtonPushed
         val prediacteB = oilLifePrognostics.isError && (!vehicleStatus.vehicleStatusAuthorised && !vehicleStatus.isLocationAuthorised)
-        val response = predicateA || prediacteB
+        val predicateC= ccsResponse.isError
+        val response = (predicateA || prediacteB) || predicateC
         return response
     }
 

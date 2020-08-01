@@ -67,7 +67,7 @@ class MainActivityViewModelTest {
                 )
             )
         var ccsResponse: CcsResponse =
-            CcsResponse(isError = true)
+            CcsResponse(isError = false)
 
         val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
         val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
@@ -130,7 +130,7 @@ class MainActivityViewModelTest {
                 )
             )
         var ccsResponse: CcsResponse =
-            CcsResponse(isError = true)
+            CcsResponse(isError = false)
 
         val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
         val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
@@ -226,7 +226,7 @@ class MainActivityViewModelTest {
                 )
             )
         var ccsResponse: CcsResponse =
-            CcsResponse(isError = true)
+            CcsResponse(isError = false)
 
         val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
         val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
@@ -347,6 +347,389 @@ class MainActivityViewModelTest {
 
     @Test
     fun `zipAPIs - Button not pushed  and OLP VS fail  - doesn't zipped items`() {
+        val learnMore_button_pushed: Boolean = false
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = true,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = false,
+                isLocationAuthorised = false,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse =
+            CcsResponse(isError = true)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments = OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus = vehicleStatus
+        subject.oilLifePrognostics = oilLifePrognostics
+        subject.ccsResponse = ccsResponse
+        subject.learnMoreButtonPushed = learnMore_button_pushed
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
+    }
+    @Test
+    fun `zipAPIs - Button pushed and OLP VS not fail and ccs not fail - return zipped items`() {
+        val learnMore_button_pushed: Boolean = true
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = false,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse =
+            CcsResponse(isError = false)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments = OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus = vehicleStatus
+        subject.oilLifePrognostics = oilLifePrognostics
+        subject.ccsResponse = ccsResponse
+        subject.learnMoreButtonPushed = learnMore_button_pushed
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isEqualTo(intent)
+    }
+
+    @Test
+    fun `zipAPIs - Button not pushed and OLP VS not fail and ccs not fail  - doesn't zipped items`() {
+        val learnMore_button_pushed: Boolean = false
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = false,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse =
+            CcsResponse(isError = false)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments = OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus = vehicleStatus
+        subject.oilLifePrognostics = oilLifePrognostics
+        subject.ccsResponse = ccsResponse
+        subject.learnMoreButtonPushed = learnMore_button_pushed
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
+    }
+
+    @Test
+    fun `zipAPIs - Button pushed and OLP VS fail  and ccs not fail- doesn't zipped items`() {
+        val learnMore_button_pushed: Boolean = true
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = true,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = false,
+                isLocationAuthorised = false,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse =
+            CcsResponse(isError = false)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments = OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus = vehicleStatus
+        subject.oilLifePrognostics = oilLifePrognostics
+        subject.ccsResponse = ccsResponse
+        subject.learnMoreButtonPushed = learnMore_button_pushed
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
+    }
+
+    @Test
+    fun `zipAPIs - Button not pushed  and OLP VS fail and ccs not fail - doesn't zipped items`() {
+        val learnMore_button_pushed: Boolean = false
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = true,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = false,
+                isLocationAuthorised = false,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse =
+            CcsResponse(isError = false)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments = OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus = vehicleStatus
+        subject.oilLifePrognostics = oilLifePrognostics
+        subject.ccsResponse = ccsResponse
+        subject.learnMoreButtonPushed = learnMore_button_pushed
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
+    }
+
+    @Test
+    fun `zipAPIs - Button pushed and OLP VS not fail and ccs fails - doesn't zipped items`() {
+        val learnMore_button_pushed: Boolean = true
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = false,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse =
+            CcsResponse(isError = true)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments = OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus = vehicleStatus
+        subject.oilLifePrognostics = oilLifePrognostics
+        subject.ccsResponse = ccsResponse
+        subject.learnMoreButtonPushed = learnMore_button_pushed
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
+    }
+
+    @Test
+    fun `zipAPIs - Button not pushed and OLP VS not fail and ccs fails  - doesn't zipped items`() {
+        val learnMore_button_pushed: Boolean = false
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = false,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse =
+            CcsResponse(isError = true)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments = OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus = vehicleStatus
+        subject.oilLifePrognostics = oilLifePrognostics
+        subject.ccsResponse = ccsResponse
+        subject.learnMoreButtonPushed = learnMore_button_pushed
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
+    }
+
+    @Test
+    fun `zipAPIs - Button pushed and OLP VS fail and ccs fails - doesn't zipped items`() {
+        val learnMore_button_pushed: Boolean = true
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = true,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = false,
+                isLocationAuthorised = false,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse =
+            CcsResponse(isError = true)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments = OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus = vehicleStatus
+        subject.oilLifePrognostics = oilLifePrognostics
+        subject.ccsResponse = ccsResponse
+        subject.learnMoreButtonPushed = learnMore_button_pushed
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value).isEqualTo(null)
+    }
+
+    @Test
+    fun `zipAPIs - Button not pushed  and OLP VS fail and ccs fails - doesn't zipped items`() {
         val learnMore_button_pushed: Boolean = false
         var oilLifePrognostics: OilLifePrognostics =
             OilLifePrognostics(
