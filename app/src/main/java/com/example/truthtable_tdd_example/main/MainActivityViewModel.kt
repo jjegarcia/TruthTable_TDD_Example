@@ -74,7 +74,9 @@ class MainActivityViewModel @Inject constructor(
 
     fun zipAPIs(view: View): Disposable? {
         return Single.zip(
-            fetchOilLifePrognostics(oilLifePrognostics), fetchVehicleStatus(vehicleStatus), fetchCcsResponse(ccsResponse),
+            fetchOilLifePrognostics(oilLifePrognostics),
+            fetchVehicleStatus(vehicleStatus),
+            fetchCcsResponse(ccsResponse),
             zipFunction
         )
             .subscribe(handleSubscription(view), { this.handleError(throwable = it) })

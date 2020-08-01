@@ -24,5 +24,68 @@ class MainActivityViewModelTest {
 
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
+    @Test
+    fun `getIntent - any condition - returns Intent`() {
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        val arguments: OilMessageIntentArguments.LoadRequestArguments = mockk()
+        val intent: Intent = mockk()
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+
+        val response = subject.getIntent(context = context, arguments = arguments)
+
+        assertThat(response).isNotNull()
+        assertThat(response).isEqualTo(intent)
+    }
+
+    @Test
+    fun `zipAPIs - APIsFail forced to false - return zipped items`() {
+        var oilLifePrognostics: OilLifePrognostics =
+            OilLifePrognostics(
+                isError = true,
+                oil = OilDataClass(
+                    vin = "OLP_vin",
+                    percentage = 50,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var vehicleStatus: VehicleStatus =
+            VehicleStatus(
+                vehicleStatusAuthorised = true,
+                isLocationAuthorised = true,
+                oil = OilDataClass(
+                    vin = "OIL_vin",
+                    percentage = 25,
+                    state = OilState.GOOD,
+                    date = Date()
+                )
+            )
+        var ccsResponse: CcsResponse=
+            CcsResponse(isError = true)
+
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val intent: Intent = mockk()
+        val context: Context = mockk()
+        every { view.context } returns context
+        var arguments =OilMessageIntentArguments.LoadRequestArguments(
+            oilLifePrognostics = oilLifePrognostics,
+            oil = vehicleStatus,
+            ccsResponse = ccsResponse
+        )
+        every { oilLifeHealthDetailsIntentProvider.newIntent(context, arguments) } returns intent
+        subject.vehicleStatus=vehicleStatus
+        subject.oilLifePrognostics=oilLifePrognostics
+        subject.ccsResponse=ccsResponse
+        val response = subject.zipAPIs(view = view)
+
+        assertThat(subject.launchDetailsAcitivityData.value!!.intent).isEqualTo(intent)
+    }
+
 }
 
