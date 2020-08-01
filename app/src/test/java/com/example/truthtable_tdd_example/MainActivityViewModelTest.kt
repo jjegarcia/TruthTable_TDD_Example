@@ -87,5 +87,19 @@ class MainActivityViewModelTest {
         assertThat(subject.launchDetailsAcitivityData.value!!.intent).isEqualTo(intent)
     }
 
+    @Test
+    fun `launchSnackBar - any condition - loads snackbar parameters`() {
+        val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider = mockk()
+        val subject = MainActivityViewModel(oilLifeHealthDetailsIntentProvider)
+        val view: View = mockk()
+        val message = "testing"
+        val length = Snackbar.LENGTH_LONG
+
+        subject.launchSnackBar(view = view, message = message, length = length)
+
+        assertThat(subject.launchSnackBarData.value!!.view).isEqualTo(view)
+        assertThat(subject.launchSnackBarData.value!!.message).isEqualTo(message)
+        assertThat(subject.launchSnackBarData.value!!.length).isEqualTo(length)
+    }
 }
 
