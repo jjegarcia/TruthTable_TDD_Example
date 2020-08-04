@@ -4,4 +4,15 @@
     <string name="DetailsActivityDescription">Deatails Screen</string>
     <string name="title_activity_details2">DetailsActivity</string>
     <string name="details_activity">Details Activity:</string>
+    <string name="_100">100</string>
+    <string name="_90">90</string>
+    <string name="_80">80</string>
+    <string name="_70">70</string>
+    <string name="_60">60</string>
+    <string name="_50">50</string>
+    <string name="_40">40</string>
+    <string name="_30">30</string>
+    <string name="_20">20</string>
+    <string name="_10">10</string>
+    <string name="_0">0</string>
 </resources>

@@ -11,14 +11,13 @@ import com.example.truthtable_tdd_example.data.*
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Single
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function3
 import java.util.*
 import javax.inject.Inject
 
 
 class MainActivityViewModel @Inject constructor(
-    val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider
+    private val oilLifeHealthDetailsIntentProvider: OilLifeHealthDetailsIntentProvider
 ) : ViewModel() {
     lateinit var oilLifePrognostics: OilLifePrognostics
     lateinit var vehicleStatus: VehicleStatus
@@ -28,14 +27,15 @@ class MainActivityViewModel @Inject constructor(
     val launchSnackBarData: LiveData<SnackBarDataClass> get() = _launchSnackBarData
     private val _launchDetailsAcitivityData = MutableLiveData<LauchActivityDataClass>()
     val launchDetailsAcitivityData: LiveData<LauchActivityDataClass> get() = _launchDetailsAcitivityData
-
+    var showBar:Int= View.GONE
     fun buttonClickHandler(view: View) {
         Log.d("test", "buttom clicked")
-//        setOilLifePrognostic()
-//        setVehicleStatus()
-//        setCcsResponse()
-        launchDetailsActivity(view = view)
+        showBar=View.VISIBLE
+        setOilLifePrognostic()
+        setVehicleStatus()
+        setCcsResponse()
         learnMoreButtonPushed = true
+        launchDetailsActivity(view = view)
     }
 
     fun launchSnackBar(view: View, message: String, length: Int) {
@@ -48,8 +48,8 @@ class MainActivityViewModel @Inject constructor(
         _launchSnackBarData.postValue(snackData)
     }
 
-    fun launchDetailsActivity(view: View) {
-        val launchActivityData = zipAPIs(view)
+    private fun launchDetailsActivity(view: View) {
+        zipAPIs(view)
     }
 
     fun getIntent(
@@ -62,15 +62,15 @@ class MainActivityViewModel @Inject constructor(
         )
     }
 
-    fun fetchOilLifePrognostics(oilLifePrognostics: OilLifePrognostics): Single<OilLifePrognostics> {
+    private fun fetchOilLifePrognostics(oilLifePrognostics: OilLifePrognostics): Single<OilLifePrognostics> {
         return Single.just(oilLifePrognostics)
     }
 
-    fun fetchVehicleStatus(vehicleStatus: VehicleStatus): Single<VehicleStatus> {
+    private fun fetchVehicleStatus(vehicleStatus: VehicleStatus): Single<VehicleStatus> {
         return Single.just(vehicleStatus)
     }
 
-    fun fetchCcsResponse(ccsResponse: CcsResponse): Single<CcsResponse> {
+    private fun fetchCcsResponse(ccsResponse: CcsResponse): Single<CcsResponse> {
         return Single.just(ccsResponse)
     }
 
@@ -86,7 +86,8 @@ class MainActivityViewModel @Inject constructor(
 
     private fun handleSubscription(view: View): (Pair<Pair<OilLifePrognostics, VehicleStatus>, CcsResponse>) -> Unit {
         return {
-            if (APIsFail(
+            showBar=View.GONE
+            if (aPIsFail(
                     oilLifePrognostics = oilLifePrognostics,
                     vehicleStatus = vehicleStatus,
                     ccsResponse = ccsResponse
@@ -109,21 +110,17 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    val zipFunction =
+    private val zipFunction =
         Function3 { oilLifePrognostics: OilLifePrognostics, vehicleStatus: VehicleStatus, ccsResponse: CcsResponse ->
             oilLifePrognostics to vehicleStatus to ccsResponse
         }
 
-    private fun APIsFail(
+    private fun aPIsFail(
         oilLifePrognostics: OilLifePrognostics,
         vehicleStatus: VehicleStatus,
         ccsResponse: CcsResponse
     ): Boolean {
-        val predicateA = !learnMoreButtonPushed
-        val prediacteB = oilLifePrognostics.isError && (!vehicleStatus.vehicleStatusAuthorised && !vehicleStatus.isLocationAuthorised)
-        val predicateC= ccsResponse.isError
-        val response = (predicateA || prediacteB) || predicateC
-        return response
+        return (!learnMoreButtonPushed || oilLifePrognostics.isError && (!vehicleStatus.vehicleStatusAuthorised && !vehicleStatus.isLocationAuthorised)) || ccsResponse.isError
     }
 
     private fun displayErrorSnackbar(view: View) {

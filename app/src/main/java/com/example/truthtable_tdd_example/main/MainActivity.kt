@@ -11,24 +11,30 @@ import com.example.truthtable_tdd_example.di.MyApplication
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
-    val mainSupport= MainSupport()
+    val mainSupport = MainSupport()
+
     @Inject
     lateinit var mainActivityViewModel: MainActivityViewModel
+//    var showBar: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (application as MyApplication).appComponent.inject(this) //1
         inflateBinding()
         mainActivityViewModel.launchSnackBarData.observe(
-        this, Observer {
-                mainSupport.showSnackBar(view = it.view,message = it.message,length = it.length)
+            this, Observer {
+                mainSupport.showSnackBar(view = it.view, message = it.message, length = it.length)
             }
         )
         mainActivityViewModel.launchDetailsAcitivityData.observe(
             this, Observer {
-                mainSupport.launchIntent(view = it.view,intent = it.intent)
+                mainSupport.launchIntent(view = it.view, intent = it.intent)
             }
         )
+//        mainActivityViewModel.showBar.observe(
+//            this,
+//            Observer { showBar }
+//        )
     }
 
     private fun inflateBinding() {

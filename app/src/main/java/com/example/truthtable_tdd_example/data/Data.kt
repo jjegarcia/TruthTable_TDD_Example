@@ -2,6 +2,7 @@ package com.example.truthtable_tdd_example.data
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Parcelable
 import android.view.View
 import com.example.truthtable_tdd_example.details.DetailsActivity
@@ -11,10 +12,28 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 import javax.inject.Inject
 
-data class ItemData(
-    val label:String,
-    val value:String
+data class LevelData(
+    val percentage: Int,
+    val color: LevelColor
 )
+
+enum class LevelColor(val color: Int) {
+    GREEN(Color.GREEN),
+    YELLOW(Color.YELLOW),
+    RED(Color.RED)
+}
+
+enum class ColorRange(val percentageRange: IntRange) {
+    GREEN(50..100),
+    YELLOW(20..50),
+    RED(0..20)
+}
+
+data class ItemData(
+    val label: String,
+    val value: String
+)
+
 data class SnackBarDataClass(
     val view: View,
     val message: String,
@@ -32,7 +51,7 @@ data class OilDataClass(
     val percentage: Int,
     val state: OilState,
     val date: Date?
-):Parcelable
+) : Parcelable
 
 enum class OilState {
     GOOD,
@@ -45,18 +64,18 @@ data class VehicleStatus(
     var vehicleStatusAuthorised: Boolean,
     var isLocationAuthorised: Boolean,
     var oil: OilDataClass
-):Parcelable
+) : Parcelable
 
 @Parcelize
 data class OilLifePrognostics(
     var isError: Boolean,
     var oil: OilDataClass
-):Parcelable
+) : Parcelable
 
 @Parcelize
 data class CcsResponse(
     var isError: Boolean
-):Parcelable
+) : Parcelable
 
 class OilMessageIntentArguments {
     @Parcelize
@@ -64,7 +83,7 @@ class OilMessageIntentArguments {
         val oilLifePrognostics: OilLifePrognostics,
         val oil: VehicleStatus,
         val ccsResponse: CcsResponse
-    ):Parcelable
+    ) : Parcelable
 }
 
 const val LAUNCH_HEALTH_DETAILS_ARGUMENTS = "launchHealthDetailsArguments"
@@ -74,7 +93,12 @@ abstract class IntentProvider {
     fun newIntent(context: Context): Intent {
         return Intent(context, getClazz())
     }
-    fun newIntent(context: Context, arguments: OilMessageIntentArguments.LoadRequestArguments): Intent =
-        newIntent(context).putExtra(LAUNCH_HEALTH_DETAILS_ARGUMENTS,arguments)
+
+    fun newIntent(
+        context: Context,
+        arguments: OilMessageIntentArguments.LoadRequestArguments
+    ): Intent =
+        newIntent(context).putExtra(LAUNCH_HEALTH_DETAILS_ARGUMENTS, arguments)
 }
+
 abstract class OilLifeHealthDetailsIntentProvider : IntentProvider()

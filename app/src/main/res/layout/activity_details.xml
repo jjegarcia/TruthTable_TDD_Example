@@ -46,10 +46,12 @@
                 android:layout_height="wrap_content" />
 
         <include
-                android:id="@+id/bar"
-                layout="@layout/bar"
+                android:id="@+id/levelBar"
+                layout="@layout/level_indicator"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                />
+
 
     </LinearLayout>
 </layout>

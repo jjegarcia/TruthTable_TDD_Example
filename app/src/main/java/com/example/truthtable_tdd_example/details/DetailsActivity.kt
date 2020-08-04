@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.truthtable_tdd_example.data.OilDataClass
 import com.example.truthtable_tdd_example.R
 import com.example.truthtable_tdd_example.data.LAUNCH_HEALTH_DETAILS_ARGUMENTS
+import com.example.truthtable_tdd_example.data.LevelData
 import com.example.truthtable_tdd_example.data.OilMessageIntentArguments
 import com.example.truthtable_tdd_example.databinding.ActivityDetailsBinding
 import com.example.truthtable_tdd_example.di.MyApplication
@@ -37,6 +38,7 @@ class DetailsActivity : AppCompatActivity() {
             viewModel = detailsActivityViewModel
         }
         detailsActivityViewModel.setVehicleData(view =ActivityDetails.rootView , oilDataClass = arguments.oil.oil)
+        detailsActivityViewModel.setLevelIndicatorData(view = ActivityDetails.rootView,percentage = 90)
     }
 
 }
