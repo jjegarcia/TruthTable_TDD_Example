@@ -9,7 +9,7 @@ import javax.inject.Inject
 @Module
 abstract class IntentModule {
     @Binds
-    abstract  fun provideOilLifeIntent (activity : ActivityProvider): OilLifeHealthDetailsIntentProvider
+    abstract  fun provideIntent (activity : ActivityProvider): OilLifeHealthDetailsIntentProvider
 }
 
 class ActivityProvider @Inject constructor() : OilLifeHealthDetailsIntentProvider(){
